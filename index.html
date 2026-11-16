@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VOTEHK - 蹺蹺板即時投票</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <h1>⚖️ VOTEHK 蹺蹺板投票</h1>
+      <p>點選左邊或右邊投票！傾斜角度依兩邊票數動態計算，每帳號每 5 分鐘可投一票。</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- 設定尚未完成提示 -->
+    <section id="config-warning" class="card warn" hidden>
+      <h2>⚠️ 設定尚未完成</h2>
+      <p id="config-message"></p>
+      <p>請打開 <code>config.js</code>，將值換成您 Supabase 專案的 Project URL 與 publishable key，並在 Supabase SQL Editor 執行 <code>schema.sql</code>。</p>
+    </section>
+
+    <!-- 蹺蹺板即時狀態區（未登入也可查看） -->
+    <section class="card">
+      <h2>即時蹺蹺板狀態</h2>
+      <div class="seesaw-container">
+        <div class="seesaw-stage">
+          <!-- 蹺蹺板板身 -->
+          <div id="seesaw-plank" class="seesaw-plank">
+            <div class="seat seat-left">
+              <span class="seat-avatar">🔵</span>
+            </div>
+            <div class="seat seat-right">
+              <span class="seat-avatar">🔴</span>
+            </div>
+          </div>
+          <!-- 支點與底座 -->
+          <div class="seesaw-fulcrum"></div>
+          <div class="seesaw-base"></div>
+        </div>
+
+        <div class="seesaw-stats">
+          <div id="angle-pill" class="angle-pill">目前傾斜：0.0°（平衡）</div>
+          <div id="ratio-info" class="ratio-info">左邊 0 票 vs 右邊 0 票</div>
+        </div>
+
+        <!-- 投票按鈕 -->
+        <div class="vote-controls">
+          <button id="vote-left-btn" type="button" class="vote-btn vote-left" disabled>
+            <span>投給 左邊 (Blue)</span>
+            <span id="left-count-badge" class="vote-count">0</span>
+          </button>
+          <button id="vote-right-btn" type="button" class="vote-btn vote-right" disabled>
+            <span>投給 右邊 (Red)</span>
+            <span id="right-count-badge" class="vote-count">0</span>
+          </button>
+        </div>
+
+        <!-- 倒數冷卻提示 -->
+        <div id="cooldown-box" class="cooldown-box">
+          請先登入後進行投票
+        </div>
+      </div>
+    </section>
+
+    <!-- 登入 / 註冊區塊 -->
+    <section id="auth-view" class="card">
+      <h2>登入或註冊以參與投票</h2>
+      <form id="auth-form">
+        <label for="email">電子郵件 (Email)</label>
+        <input id="email" type="email" autocomplete="email" placeholder="name@example.com" required>
+        <label for="password">密碼（至少 6 個字元）</label>
+        <input id="password" type="password" autocomplete="current-password" minlength="6" required>
+        <div class="row">
+          <button type="submit" id="login-btn">登入</button>
+          <button type="button" id="sign-up-btn" class="secondary">第一次來：註冊</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 登入後的使用者面板與歷史紀錄 -->
+    <section id="app-view" hidden>
+      <div class="card who">
+        <p>已登入：<strong id="user-email"></strong></p>
+        <button type="button" id="logout-btn" class="secondary">登出</button>
+      </div>
+
+      <section class="card">
+        <h2>我的投票紀錄 <span id="history-count" class="muted"></span></h2>
+        <ul id="history-list" class="history-list">
+          <li class="muted">尚無投票紀錄</li>
+        </ul>
+      </section>
+    </section>
+
+    <!-- 訊息提示列 -->
+    <p id="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"
+          integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK"
+          crossorigin="anonymous"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+:root {
+  color-scheme: light;
+  font: 100%/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  color: #1e293b;
+  background: #f8fafc;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+
+.wrap { width: min(100% - 2rem, 48rem); margin-inline: auto; }
+
+.top {
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+  color: #fff;
+  padding: 1.8rem 0 1.4rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15);
+}
+.top h1 { margin: 0 0 .3rem; font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 700; }
+.top p { margin: 0; color: #ccfbf1; font-size: 0.95rem; }
+
+h2 { font-size: 1.25rem; margin: 0 0 .8rem; color: #0f172a; }
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.card.warn { background: #fffbeb; border-color: #fde68a; }
+.card.danger { background: #fef2f2; border-color: #fecaca; }
+
+label { display: block; font-weight: 600; margin: .8rem 0 .3rem; font-size: 0.9rem; color: #334155; }
+input {
+  width: 100%;
+  font: inherit;
+  padding: .65rem .8rem;
+  border: 1px solid #cbd5e1;
+  border-radius: .55rem;
+  background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+}
+input:focus {
+  outline: none;
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.2);
+}
+
+button {
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: .55rem;
+  padding: .65rem 1.2rem;
+  background: #0f766e;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color .15s, transform .05s, opacity .15s;
+}
+button:hover:not(:disabled) { background: #115e59; }
+button:active:not(:disabled) { transform: scale(0.98); }
+button:disabled { opacity: .55; cursor: not-allowed; }
+button.secondary { background: #f1f5f9; color: #334155; }
+button.secondary:hover:not(:disabled) { background: #e2e8f0; }
+
+.row { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+.who { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; }
+.who p { margin: 0; }
+.muted { color: #64748b; font-weight: 400; font-size: .9rem; }
+
+/* 蹺蹺板視覺區塊 */
+.seesaw-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 1rem;
+}
+
+.seesaw-stage {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 翹翹板板身 */
+.seesaw-plank {
+  position: absolute;
+  top: 75px;
+  width: 88%;
+  height: 16px;
+  background: linear-gradient(90deg, #d97706 0%, #b45309 100%);
+  border-radius: 8px;
+  box-shadow: 0 6px 12px rgba(180, 83, 9, 0.3);
+  transform-origin: 50% 50%;
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+/* 兩端的乘坐者／按鈕坐標 */
+.seat {
+  position: absolute;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.seat-left { left: 16px; }
+.seat-right { right: 16px; }
+
+.seat-avatar {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  user-select: none;
+}
+
+/* 支點 (三角形) */
+.seesaw-fulcrum {
+  position: absolute;
+  top: 80px;
+  width: 0;
+  height: 0;
+  border-left: 28px solid transparent;
+  border-right: 28px solid transparent;
+  border-bottom: 50px solid #475569;
+  z-index: 1;
+}
+
+/* 底座橫桿 */
+.seesaw-base {
+  position: absolute;
+  top: 128px;
+  width: 130px;
+  height: 10px;
+  background: #334155;
+  border-radius: 5px;
+  z-index: 2;
+}
+
+/* 蹺蹺板狀態數值與角度資訊 */
+.seesaw-stats {
+  margin-top: 1.2rem;
+  text-align: center;
+}
+.angle-pill {
+  display: inline-block;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f766e;
+}
+.ratio-info {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* 投票按鈕控制列 */
+.vote-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.vote-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.1rem;
+  border-radius: 0.8rem;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+}
+.vote-left {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+}
+.vote-left:hover:not(:disabled) {
+  background: #0284c7;
+  border-color: #38bdf8;
+}
+.vote-right {
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+}
+.vote-right:hover:not(:disabled) {
+  background: #e11d48;
+  border-color: #fb7185;
+}
+
+.vote-count {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 0.25rem;
+}
+
+/* 冷卻倒數計時器 */
+.cooldown-box {
+  margin-top: 1.2rem;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  padding: 0.75rem 1rem;
+  border-radius: 0.6rem;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #475569;
+}
+.cooldown-box.ready {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+
+/* 個人投票歷史清單 */
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.history-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+.history-list li:last-child {
+  border-bottom: none;
+}
+.vote-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 0.4rem;
+  font-size: 0.85rem;
+}
+.vote-tag.left { background: #e0f2fe; color: #0369a1; }
+.vote-tag.right { background: #ffe4e6; color: #be123c; }
+
+#status {
+  min-height: 1.6em;
+  margin: 0.5rem 0 2rem;
+  font-size: 0.95rem;
+}
+#status[data-kind="error"] { color: #dc2626; font-weight: 600; }
+#status[data-kind="warn"] { color: #d97706; font-weight: 600; }
+#status[data-kind="ok"] { color: #16a34a; font-weight: 600; }
